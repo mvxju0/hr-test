@@ -3,27 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HR 시스템 로그인</title>
+  <title>HR/운영관리 시스템 - 로그인</title>
   <link rel="stylesheet" href="assets/css/common.css" />
 </head>
 <body>
   <div class="login-wrap">
-    <form class="login-box" id="loginForm">
-      <h2>HR / 운영관리 시스템</h2>
-      <p class="sub">실개발 전 시연용 목업 로그인</p>
-      <label>아이디</label><input required value="demo.admin" />
-      <label>비밀번호</label><input type="password" required value="1234" />
-      <label>권한 선택</label>
-      <select id="role">
-        <option>플래너</option><option>점장</option><option>팀장</option><option>담당</option><option>사무실</option>
-      </select>
-      <button class="primary" style="width:100%;margin-top:12px">로그인</button>
-    </form>
+    <div class="login-box">
+      <h1 style="margin-top:0;">HR/운영관리 시스템</h1>
+      <p class="small">시연용 로그인 화면</p>
+      <div class="section">
+        <label>아이디</label>
+        <input class="input" id="id" placeholder="demo.admin" style="width:100%;" />
+      </div>
+      <div class="section">
+        <label>비밀번호</label>
+        <input type="password" class="input" id="pw" placeholder="••••••••" style="width:100%;" />
+      </div>
+      <div class="section">
+        <label>권한 선택</label>
+        <select id="role" style="width:100%;">
+          <option>플래너</option><option>점장</option><option>팀장</option><option>담당</option><option>사무실</option>
+        </select>
+      </div>
+      <div class="section">
+        <button id="loginBtn" class="btn-primary" style="width:100%;">로그인</button>
+      </div>
+      <p class="small">로그인 시 선택한 권한(role)은 localStorage에 저장됩니다.</p>
+    </div>
   </div>
   <script>
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      localStorage.setItem('role', document.getElementById('role').value);
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      const role = document.getElementById('role').value;
+      localStorage.setItem('hr_role', role);
       location.href = 'front.html';
     });
   </script>

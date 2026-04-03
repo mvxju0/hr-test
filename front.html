@@ -1,16 +1,32 @@
-<!doctype html><html lang="ko"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>대시보드</title>
-<link rel="stylesheet" href="assets/css/common.css"></head>
-<body data-page="front.html"><div class="app"><main class="main">
-<div class="banner"><h3 id="hello"></h3><p id="today"></p><p>공지: 2026년 4월 온오프 기준 및 승인 플로우가 업데이트되었습니다.</p></div>
-<div class="card-grid"><div class="card"><h3>총 직원 수</h3><div class="num" id="empCount"></div></div>
-<div class="card"><h3>승인 대기 건수</h3><div class="num" id="pendingCount"></div></div>
-<div class="card"><h3>총 매장 수</h3><div class="num" id="storeCount"></div></div>
-<div class="card"><h3>금일 오픈지연</h3><div class="num" id="delayCount">0</div></div></div>
-
-<div class="panel"><h3>오늘의 운영 요약</h3><div class="quick" id="quickCards"></div></div>
-<div class="panel compact-table"><h3>최근 승인 요청</h3>
-<div class="table-wrap"><table><thead><tr><th>구분</th><th>대상</th><th>요청 내용</th><th>요청자</th><th>상태</th></tr></thead><tbody id="recentApv"></tbody></table></div></div>
-</main></div>
-<script src="assets/data/dummy.js"></script><script src="assets/js/common.js"></script><script src="assets/js/app.js"></script>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>대시보드</title>
+  <link rel="stylesheet" href="assets/css/common.css" />
+</head>
+<body>
+<div id="app"></div>
+<script src="assets/data/dummy-data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+  const { DATA, layoutInit, getRole } = HR_COMMON;
+  layoutInit('front', '대시보드');
+  const pending = DATA.approvalHub.signup.length + DATA.approvalHub.employeeEdit.length + DATA.approvalHub.storeEdit.length
+    + JSON.parse(localStorage.getItem('approval_employee_edit') || '[]').length
+    + JSON.parse(localStorage.getItem('approval_store_edit') || '[]').length;
+  document.getElementById('pageContent').innerHTML = `
+    <p style="margin:12px 0 6px;">${getRole()}님, 오늘도 안정적인 운영을 시작합니다.</p>
+    <p class="small">${DATA.getToday()}</p>
+    <div class="notice">공지: 개인정보 열람은 담당/팀장에게만 허용되며, 수정은 승인 이후 반영됩니다.</div>
+    <div class="card-grid">
+      <article class="card"><h3>총 직원 수</h3><p class="value">${DATA.employees.length}명</p></article>
+      <article class="card"><h3>승인 대기 건수</h3><p class="value">${pending}건</p></article>
+      <article class="card"><h3>총 매장 수</h3><p class="value">${DATA.stores.length}개</p></article>
+    </div>
+    <section class="section card">
+      <h3 style="margin-top:0">권한 기반 확장 영역</h3>
+      <p style="margin:0">현재 권한 <strong>${getRole()}</strong>에 맞춰 메뉴/데이터 확장이 가능하도록 공통 구조를 적용했습니다.</p>
+    </section>`;
+</script>
 </body></html>

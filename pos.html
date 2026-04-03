@@ -1,4 +1,25 @@
-<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>매장</title>
-<link rel="stylesheet" href="assets/css/common.css"></head>
-<body data-page="pos.html"><div class="app"><main class="main"><div class="card-grid" id="storeCards"></div></main></div>
-<script src="assets/data/dummy.js"></script><script src="assets/js/common.js"></script><script src="assets/js/app.js"></script></body></html>
+<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>매장</title><link rel="stylesheet" href="assets/css/common.css" /></head>
+<body><div id="app"></div>
+<script src="assets/data/dummy-data.js"></script><script src="assets/js/common.js"></script>
+<script>
+const { DATA, layoutInit, requestStoreApproval } = HR_COMMON;
+layoutInit('pos', '매장');
+const employeesByStore = DATA.employees.reduce((a,c)=>{a[c.storeCode]=(a[c.storeCode]||0)+1;return a;}, {});
+document.getElementById('pageContent').innerHTML = `
+<div class="card-grid">
+${DATA.stores.map(s=>{const m=DATA.managers.find(mm=>mm.storeCode===s.code); const perf=70 + (s.code.charCodeAt(0)%25); const cnt=employeesByStore[s.code]||0;
+  return `<article class="card"><h3>${s.code} (${s.fullName})</h3>
+    <p style="margin:4px 0;">운영상태: <span class="badge on">${s.status}</span></p>
+    <p style="margin:4px 0;">점장: ${m?m.name:'-'}</p><p style="margin:4px 0;">팀장: ${s.teamLead}</p><p style="margin:4px 0;">담당: ${s.owner}</p>
+    <p style="margin:4px 0;">매장 실적: ${perf}점 / 매장 인원 수: ${cnt}명</p>
+    <button class="btn-primary" data-edit="${s.code}">수정 요청</button></article>`;}).join('')}
+</div>`;
+document.querySelectorAll('[data-edit]').forEach((btn)=>btn.onclick=()=>{
+  const code = btn.dataset.edit;
+  const store = DATA.stores.find(s=>s.code===code);
+  requestStoreApproval({ target: code, field: '팀장', before: store.teamLead, after: `${store.teamLead}(변경요청)`, requester: '시연사용자' });
+  location.href = 'approval.html';
+});
+</script></body></html>
