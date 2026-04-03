@@ -1,7 +1,11 @@
 <!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>직원관리</title>
 <link rel="stylesheet" href="assets/css/common.css"></head>
 <body data-page="employee.html"><div class="app"><main class="main">
-<div class="panel row"><input id="q" placeholder="이름/사번/매장 검색"><select id="roleFilter"><option value="">전체 직급</option><option>플래너</option><option>점장</option></select></div>
-<div class="panel table-wrap"><table><thead><tr><th>사번</th><th>이름</th><th>직급</th><th>소속</th><th>팀장</th><th>상위관리자</th><th>연락처</th><th>입사일</th><th>상태</th><th>액션</th></tr></thead><tbody id="empBody"></tbody></table></div>
-<div class="panel" id="detail">직원을 선택하면 상세/히스토리가 표시됩니다.</div>
+<div class="panel row">
+  <input id="q" placeholder="이름/매장명 검색" style="flex:2">
+  <select id="storeFilter" style="flex:1"><option value="">전체 매장</option></select>
+  <select id="roleFilter" style="flex:1"><option value="">전체 직급</option><option>플래너</option><option>점장</option></select>
+</div>
+<div class="panel compact-table table-wrap"><table><thead><tr><th>이름</th><th>매장</th><th>연락처</th><th>전화하기</th><th>편집</th></tr></thead><tbody id="empBody"></tbody></table></div>
+<div class="panel" id="detail">직원을 선택하면 공개정보/개인정보 권한/변경 히스토리가 표시됩니다.</div>
 </main></div><script src="assets/data/dummy.js"></script><script src="assets/js/common.js"></script><script src="assets/js/app.js"></script></body></html>
