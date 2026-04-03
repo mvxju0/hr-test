@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>온오프관리</title>
+  <link rel="stylesheet" href="assets/css/common.css" />
+</head>
+<body data-page="onoff.html">
+  <div class="app">
+    <main class="main">
+      <section class="panel row toolbar">
+        <input id="workDate" type="date" value="2026-04-03" />
+        <select id="viewMode"><option value="daily">일자 조회</option><option value="monthly">월 누적 조회</option></select>
+        <select id="statusFilter"><option value="">전체 상태</option><option>정상출근</option><option>지연출근</option><option>OFF</option><option>프리데이</option></select>
+      </section>
+
+      <section class="card-grid" id="onoffKpi"></section>
+
+      <section class="panel">
+        <p class="muted">현장 지문 연동 전 시연 목업: 정상출근 여부, 도착시각, 지연분(min) 제공.</p>
+      </section>
+
+      <section class="panel table-wrap">
+        <table>
+          <thead><tr><th>이름</th><th>매장</th><th>출근시간</th><th>퇴근시간</th><th>정상출근 여부</th><th>지연 도착시간</th><th>지연분</th><th>비고</th></tr></thead>
+          <tbody id="onoffBody"></tbody>
+        </table>
+      </section>
+
+      <section class="panel compact-table" id="monthlySummary" style="display:none">
+        <h4>월 누적 요약</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>이름</th><th>정상출근</th><th>지연출근</th><th>총 지연분</th></tr></thead>
+            <tbody id="monthlyBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="assets/data/dummy.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
