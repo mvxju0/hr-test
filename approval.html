@@ -1,0 +1,8 @@
+<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>가입/승인</title>
+<link rel="stylesheet" href="assets/css/common.css"></head>
+<body data-page="approval.html"><div class="app"><main class="main">
+<div class="panel row"><button data-tab="t1">가입 승인</button><button data-tab="t2">직원 수정 승인</button><button data-tab="t3">매장 수정 승인</button></div>
+<div id="t1" class="panel tab-content"><div class="table-wrap"><table><thead><tr><th>ID</th><th>대상</th><th>요청</th><th>요청자</th><th>상태</th><th>처리</th></tr></thead><tbody id="signupBody"></tbody></table></div></div>
+<div id="t2" class="panel tab-content" style="display:none"><div class="table-wrap"><table><thead><tr><th>ID</th><th>대상</th><th>요청</th><th>요청자</th><th>상태</th><th>처리</th></tr></thead><tbody id="empApvBody"></tbody></table></div></div>
+<div id="t3" class="panel tab-content" style="display:none"><div class="table-wrap"><table><thead><tr><th>ID</th><th>대상</th><th>요청</th><th>요청자</th><th>상태</th><th>처리</th></tr></thead><tbody id="storeApvBody"></tbody></table></div></div>
+</main></div><script src="assets/data/dummy.js"></script><script src="assets/js/common.js"></script><script src="assets/js/app.js"></script></body></html>
