@@ -1,51 +1,37 @@
 <!doctype html>
-<html lang="ko"><head>
-<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>직원관리</title><link rel="stylesheet" href="assets/css/common.css" /></head>
-<body><div id="app"></div>
-<script src="assets/data/dummy-data.js"></script><script src="assets/js/common.js"></script>
-<script>
-const { DATA, layoutInit, roleCanViewPrivate, openModal, requestApproval } = HR_COMMON;
-layoutInit('employee', '직원관리');
-const content = document.getElementById('pageContent');
-let filtered = [...DATA.employees];
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>직원관리</title>
+  <link rel="stylesheet" href="assets/css/common.css" />
+</head>
+<body data-page="employee.html">
+  <div class="app">
+    <main class="main">
+      <section class="panel search-panel">
+        <div class="search-title">직원 빠른 검색</div>
+        <div class="row toolbar">
+          <input id="q" placeholder="이름/매장명 검색" />
+          <select id="storeFilter"><option value="">전체 매장</option></select>
+          <select id="roleFilter"><option value="">전체 직급</option><option>플래너</option><option>점장</option></select>
+        </div>
+      </section>
 
-function render() {
-  content.innerHTML = `
-  <div class="controls">
-    <input id="q" class="input" placeholder="이름/사번/소속 검색" />
-    <select id="roleFilter"><option value="">전체 직급</option><option>플래너 (SP2)</option><option>플래너 (SP1.5)</option><option>플래너 (SP1)</option><option>점장</option><option>사무실 담당</option></select>
-    <button id="applyFilter" class="btn-ghost">검색</button>
+      <section class="panel compact-table table-wrap employee-table">
+        <table>
+          <thead>
+            <tr><th>이름</th><th>매장</th><th>연락처</th><th>전화하기</th><th>편집</th></tr>
+          </thead>
+          <tbody id="empBody"></tbody>
+        </table>
+      </section>
+
+      <section class="panel" id="detail">직원을 선택하면 공개정보/개인정보 권한/변경 히스토리가 표시됩니다.</section>
+    </main>
   </div>
-  <div class="table-wrap"><table><thead><tr><th>사번</th><th>이름</th><th>연락처</th><th>입사일</th><th>소속</th><th>직급</th><th>상위관리자</th><th>상태</th><th>액션</th></tr></thead>
-  <tbody>${filtered.map(e=>`<tr>
-    <td>${e.id}</td><td>${e.name}</td><td>${e.contact}</td><td>${e.joinDate}</td><td>${e.storeCode}</td><td>${e.role}</td><td>${e.manager}</td><td>${e.status}</td>
-    <td><button class="btn-ghost" data-detail="${e.id}">상세</button> <button class="btn-primary" data-request="${e.id}">수정 요청</button></td>
-  </tr>`).join('')}</tbody></table></div>`;
-
-  document.getElementById('applyFilter').onclick = () => {
-    const q = document.getElementById('q').value.trim();
-    const rf = document.getElementById('roleFilter').value;
-    filtered = DATA.employees.filter(e => (!q || `${e.id}${e.name}${e.storeCode}`.includes(q)) && (!rf || e.role === rf));
-    render();
-  };
-
-  document.querySelectorAll('[data-detail]').forEach((btn)=>btn.onclick=()=>{
-    const e = DATA.employees.find(v=>v.id===btn.dataset.detail);
-    openModal(`
-      <h3>${e.name} 상세보기</h3>
-      <p>공개 정보: 이름 ${e.name} / 연락처 ${e.contact} / 입사일 ${e.joinDate} / 소속 ${e.storeCode} / 직급 ${e.role} / 상위관리자 ${e.manager} / 상태 ${e.status}</p>
-      <p>제한 정보: 이메일 ${roleCanViewPrivate()?e.email:'권한 제한'} / 주소 ${roleCanViewPrivate()?e.address:'권한 제한'}</p>
-      <h4>히스토리</h4>
-      <ul>${e.history.map(h=>`<li>${h.date} | ${h.type} | 수정자:${h.editor} | ${h.before} → ${h.after}</li>`).join('')}</ul>
-      <p class="small">개인정보는 담당/팀장만 열람 가능합니다.</p>`);
-  });
-
-  document.querySelectorAll('[data-request]').forEach((btn)=>btn.onclick=()=>{
-    const e = DATA.employees.find(v=>v.id===btn.dataset.request);
-    requestApproval({ target: e.name, field: '소속', before: e.storeCode, after: `${e.storeCode}(변경요청)`, requester: '시연사용자' });
-    location.href = 'approval.html';
-  });
-}
-render();
-</script></body></html>
+  <script src="assets/data/dummy.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

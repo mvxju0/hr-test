@@ -8,19 +8,23 @@
     HR.applyLayout('HR / 운영관리 시스템');
     byId('hello').textContent = `${HR.role}님, 오늘도 안정적인 운영을 응원합니다.`;
     byId('today').textContent = new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
     byId('empCount').textContent = data.employees.length;
     byId('pendingCount').textContent = data.pendingAll.length;
     byId('storeCount').textContent = data.stores.length;
-    const today = byId('workDate')?.value || '2026-04-03';
-    const delays = data.onoffLogs.filter((r) => r.date === today && r.status === '지연출근').length;
+    const delays = data.onoffLogs.filter((r) => r.date === '2026-04-03' && r.status === '지연출근').length;
     byId('delayCount').textContent = delays;
 
     byId('quickCards').innerHTML = [
       ['금일 정상출근', `${data.onoffLogs.filter(r => r.date === '2026-04-03' && r.status === '정상출근').length}명`],
       ['금일 프리데이', `${data.onoffLogs.filter(r => r.date === '2026-04-03' && r.status === '프리데이').length}명`],
       ['승인 처리율', '87%'],
-      ['이번달 누적 지연분', `${data.onoffLogs.filter(r=>r.status==='지연출근').reduce((a,b)=>a+b.delayMin,0)}분`]
-    ].map(([t,v]) => `<div class='card'><h3>${t}</h3><div class='kpi'>${v}</div></div>`).join('');
+      ['이번달 누적 지연분', `${data.onoffLogs.filter(r => r.status==='지연출근').reduce((a,b)=>a+b.delayMin,0)}분`]
+    ].map(([t, v]) => `<div class='card'><h3>${t}</h3><div class='kpi'>${v}</div></div>`).join('');
+
+    byId('miniChart').innerHTML = [
+      ['정상출근', 78], ['지연출근', 14], ['프리데이', 8]
+    ].map(([label, val]) => `<div class='bar-row'><span>${label}</span><div class='bar'><i style='width:${val}%'></i></div><b>${val}%</b></div>`).join('');
 
     byId('recentApv').innerHTML = data.pendingAll.slice(0, 6).map((r) =>
       `<tr><td>${r.type}</td><td>${r.target}</td><td>${r.request}</td><td>${r.requester}</td><td>${HR.badge('승인대기')}</td></tr>`
@@ -51,8 +55,8 @@
           <td><button class='detail' data-id='${e.empNo}'>${e.name}</button></td>
           <td>${e.storeCode} (${e.storeName})</td>
           <td>${e.contact}</td>
-          <td><a href='tel:${e.contact}'><button>전화</button></a></td>
-          <td><button ${HR.canEdit ? '' : 'disabled'} class='edit' data-id='${e.empNo}'>편집요청</button></td>
+          <td><a href='tel:${e.contact}'><button class='primary'>전화하기</button></a></td>
+          <td><button ${HR.canEdit ? '' : 'disabled'} class='edit' data-id='${e.empNo}'>편집 요청</button></td>
         </tr>`).join('');
     }
 
@@ -120,6 +124,16 @@
     const render = () => {
       const isMonthly = mode.value === 'monthly';
       byId('monthlySummary').style.display = isMonthly ? 'block' : 'none';
+      const targetDate = dateInput.value;
+      const daily = data.onoffLogs.filter(r => r.date === targetDate);
+      const normal = daily.filter(r => r.status === '정상출근').length;
+      const delay = daily.filter(r => r.status === '지연출근').length;
+      const totalDelayMin = daily.filter(r => r.status === '지연출근').reduce((a,b)=>a+b.delayMin,0);
+      byId('onoffKpi').innerHTML = [
+        ['정상출근', `${normal}명`],
+        ['지연출근', `${delay}명`],
+        ['총 지연분', `${totalDelayMin}분`]
+      ].map(([t,v]) => `<article class='card'><h3>${t}</h3><div class='num'>${v}</div></article>`).join('');
       drawDaily();
       if (isMonthly) drawMonthly();
     };
