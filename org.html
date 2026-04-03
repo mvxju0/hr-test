@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>조직관리</title><link rel="stylesheet" href="assets/css/common.css" /></head>
+<body><div id="app"></div>
+<script src="assets/data/dummy-data.js"></script><script src="assets/js/common.js"></script>
+<script>
+const { DATA, layoutInit } = HR_COMMON;
+layoutInit('org', '조직관리');
+function drawTree(node){return `<li><strong>${node.name}</strong>${node.children?`<ul>${node.children.map(drawTree).join('')}</ul>`:''}</li>`;}
+document.getElementById('pageContent').innerHTML = `
+<div class="card-grid">
+  <section class="card tree"><h3>${DATA.org.field.title}</h3><ul>${DATA.org.field.tree.map(drawTree).join('')}</ul></section>
+  <section class="card tree"><h3>${DATA.org.office.title}</h3><ul>${DATA.org.office.tree.map(drawTree).join('')}</ul></section>
+</div>
+<section class="section card"><h3 style="margin-top:0">현장 리더 매핑</h3>
+<p class="small">팀장/담당 그룹 구분</p>
+<div class="table-wrap"><table><thead><tr><th>매장</th><th>점장</th><th>팀장</th><th>담당</th></tr></thead>
+<tbody>${DATA.stores.map(s=>{const m=DATA.managers.find(mm=>mm.storeCode===s.code);return `<tr><td>${s.code} (${s.fullName})</td><td>${m?m.name:'-'}</td><td>${s.teamLead}</td><td>${s.owner}</td></tr>`}).join('')}</tbody>
+</table></div></section>`;
+</script></body></html>

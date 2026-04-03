@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>온오프관리</title><link rel="stylesheet" href="assets/css/common.css" /></head>
+<body><div id="app"></div>
+<script src="assets/data/dummy-data.js"></script><script src="assets/js/common.js"></script>
+<script>
+const { DATA, layoutInit, statusBadge } = HR_COMMON;
+layoutInit('onoff', '온오프관리');
+let rows = DATA.employees.slice(0, 80);
+const content = document.getElementById('pageContent');
+
+function render() {
+  content.innerHTML = `
+  <div class="controls">
+    <input id="datePick" type="date" class="input" value="2026-04-03" />
+    <select id="statusFilter"><option value="">전체 상태</option><option>ON</option><option>OFF</option><option>오픈지연</option><option>프리데이</option></select>
+    <button id="apply" class="btn-ghost">필터</button>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th>이름</th><th>ON</th><th>OFF</th><th>상태</th><th>비고</th><th>예외 처리</th></tr></thead>
+  <tbody>${rows.map(r=>`<tr><td>${r.name}</td><td>09:00</td><td>18:00</td><td>${statusBadge(r.onoffStatus)}</td><td>${r.note}</td><td><button data-ex="${r.id}" class="btn-primary">예외 등록</button></td></tr>`).join('')}</tbody></table></div>
+  <section class="section card"><h3 style="margin-top:0">수정 이력</h3><ul>${rows.slice(0,8).map(r=>`<li>${r.modifiedAt} - ${r.name} - 상태 ${r.onoffStatus}로 갱신 (수정자: 운영봇)</li>`).join('')}</ul></section>`;
+
+  document.getElementById('apply').onclick = () => {
+    const st = document.getElementById('statusFilter').value;
+    rows = DATA.employees.slice(0, 80).filter(r => !st || r.onoffStatus === st);
+    render();
+  };
+
+  document.querySelectorAll('[data-ex]').forEach((b)=>b.onclick=()=>alert('예외 처리가 기록되었습니다. 승인 흐름에서 확인됩니다.'));
+}
+render();
+</script></body></html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>승인 허브</title><link rel="stylesheet" href="assets/css/common.css" /></head>
+<body><div id="app"></div>
+<script src="assets/data/dummy-data.js"></script><script src="assets/js/common.js"></script>
+<script>
+const { DATA, layoutInit, statusBadge } = HR_COMMON;
+layoutInit('approval', '승인 허브');
+const tabs = ['가입 승인', '직원 수정 승인', '매장 수정 승인'];
+let active = tabs[0];
+const localEmp = JSON.parse(localStorage.getItem('approval_employee_edit') || '[]');
+const localStore = JSON.parse(localStorage.getItem('approval_store_edit') || '[]');
+
+function actions(id) { return `<button data-ok="${id}" class="btn-primary">승인</button> <button data-no="${id}" class="btn-ghost">반려</button>`; }
+function render() {
+  const content = document.getElementById('pageContent');
+  const dataMap = {
+    '가입 승인': DATA.approvalHub.signup,
+    '직원 수정 승인': [...DATA.approvalHub.employeeEdit, ...localEmp],
+    '매장 수정 승인': [...DATA.approvalHub.storeEdit, ...localStore]
+  };
+  const rows = dataMap[active];
+  content.innerHTML = `
+  <div class="controls">${tabs.map(t=>`<button class="${t===active?'btn-primary':'btn-ghost'}" data-tab="${t}">${t}</button>`).join('')}</div>
+  <div class="table-wrap"><table><thead><tr><th>ID</th><th>대상</th><th>필드/권한</th><th>변경 전</th><th>변경 후</th><th>요청자</th><th>상태</th><th>처리</th></tr></thead>
+  <tbody>${rows.map(r=>`<tr><td>${r.id}</td><td>${r.target || r.name}</td><td>${r.field || r.requestedRole}</td><td>${r.before || '-'}</td><td>${r.after || '-'}</td><td>${r.requester || '-'}</td><td>${statusBadge(r.status)}</td><td>${actions(r.id)}</td></tr>`).join('')}</tbody></table></div>
+  <p class="small">수정 요청 → 승인 대기 → 담당 승인 → 반영 흐름을 적용합니다.</p>`;
+
+  document.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>{active=b.dataset.tab;render();});
+  document.querySelectorAll('[data-ok]').forEach((b)=>b.onclick=()=>alert(`${b.dataset.ok} 승인 처리 완료`));
+  document.querySelectorAll('[data-no]').forEach((b)=>b.onclick=()=>alert(`${b.dataset.no} 반려 처리 완료`));
+}
+render();
+</script></body></html>
